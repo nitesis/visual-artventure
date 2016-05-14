@@ -1,0 +1,651 @@
+<!doctype><html><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Odyssey.js Scroll</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/x-icon" href="http://cartodb.github.io/odyssey.js/sandbox/favicon.png">
+  <link rel="icon" type="image/png" href="http://cartodb.github.io/odyssey.js/sandbox/favicon.png">
+
+  <link rel="stylesheet" href="http://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/themes/css/cartodb.css">
+  <link rel="stylesheet" href="http://cartodb.github.io/odyssey.js/sandbox/css/scroll.css">
+  <script src="http://cartodb.github.io/odyssey.js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+<style>
+input[type=text], select {
+    width: 30%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    background-color: #E31781;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #E31781;
+}
+
+
+</style>
+<body>
+  <div id="layout">
+    <!--<div class="progress-bar"></div>-->
+
+    <div class="inner-header">
+      <div id="header"></div>
+    </div>
+
+    <div id="map_pos">
+      <div id="map_container">
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <div>
+      <form action="action_page.php" style="margin-top:35px">
+        <label for="fname">Name vom Künstler</label>
+        <input type="text" id="fname" name="firstname">
+  
+        <input type="submit" value="Suche">
+      </form>
+    </div>
+    
+    <div id="content"></div>
+
+    <div id="credits">
+      <span class="title" id="title">Title</span>
+      <span class="author"><b id="author">By Name using</b> <a href="#">Odyssey.js</a><span>
+    </span></span></div>
+  </div> <!-- layout -->
+
+  <script src="http://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/cartodb.js"></script>
+  <script src="http://cartodb.github.io/odyssey.js/dist/odyssey.js" charset="UTF-8"></script>
+
+  <script>
+    O.Template({
+      init: function() {
+        var baseurl = this.baseurl = 'http://{s}.api.cartocdn.com/base-light/{z}/{x}/{y}.png';
+        var map = this.map = L.map('map',{
+          center: [0, 0],
+          zoom: 4
+        });
+
+        this.map.scrollWheelZoom.disable();
+
+        var basemap = this.basemap = L.tileLayer(baseurl, {
+          attribution: 'data OSM - map CartoDB'
+        }).addTo(map);
+
+        var story = O.Story()
+
+        this.story = story;
+        this.miniprogressbar = O.MiniProgressBar();
+
+        // trigger when  map_pos go out of the screen
+        this.edge = O.Edge(
+          O.Triggers.Scroll().less('map_pos').offset(0),
+          O.Triggers.Scroll().greater('map_pos').offset(0)
+        )
+      },
+
+      update: function(actions) {
+        var self = this;
+
+        this.story.clear();
+
+        if (this.baseurl && (this.baseurl !== actions.global.baseurl)) {
+          this.baseurl = actions.global.baseurl || 'http://0.api.cartocdn.com/base-light/{z}/{x}/{y}.png';
+
+          this.basemap.setUrl(this.baseurl);
+        }
+
+        if (this.cartoDBLayer && ("http://"+self.cartoDBLayer.options.user_name+".cartodb.com/api/v2/viz/"+self.cartoDBLayer.options.layer_definition.stat_tag+"/viz.json" !== actions.global.vizjson)) {
+          this.map.removeLayer(this.cartoDBLayer);
+
+          this.cartoDBLayer = null;
+          this.created = false;
+        }
+
+        if (actions.global.vizjson && !this.cartoDBLayer) {
+          if (!this.created) { // sendCode debounce < vis loader
+            cdb.vis.Loader.get(actions.global.vizjson, function(vizjson) {
+              self.map.fitBounds(vizjson.bounds);
+
+              cartodb.createLayer(self.map, vizjson)
+                .done(function(layer) {
+                  self.cartoDBLayer = layer;
+
+                  var sublayer = layer.getSubLayer(0),
+                      layer_name = layer.layers[0].options.layer_name,
+                      filter = actions.global.cartodb_filter ? " WHERE "+actions.global.cartodb_filter : "";
+
+                  sublayer.setSQL("SELECT * FROM "+layer_name+filter)
+
+                  self.map.addLayer(layer);
+
+                  self._resetActions(actions);
+                }).on('error', function(err) {
+                  console.log("some error occurred: " + err);
+                });
+            });
+
+            this.created = true;
+          }
+
+          return;
+        }
+
+        this._resetActions(actions);
+      },
+
+      _resetActions: function(actions) {
+        // update footer title and author
+        var title_ = actions.global.title === undefined ? '' : actions.global.title,
+            author_ = actions.global.author === undefined ? 'Using' : 'By '+actions.global.author+' using';
+
+        document.getElementById('title').innerHTML = title_;
+        document.getElementById('author').innerHTML = author_;
+        document.title = title_ + " | " + author_ +' Odyssey.js';
+
+        var TRIGGER_LINE = this.map.getSize().y + 50;
+        this.story.addEvent(
+          this.edge,
+          O.Parallel(
+            O.Actions.CSS($('#map_container')).toggleClass('attachTop'),
+            O.Actions.CSS($('#content')).toggleClass('attachMap'),
+            O.Actions.Debug().log('attach')
+          )
+        )
+
+        // create content
+        var content = '';
+
+        var slide_ = actions[0];
+        $('#header').html(slide_.html());
+
+        this.story
+          .addState(
+            O.Scroll().within($('#header')),
+            slide_(this)
+          );
+
+        for(var i = 1; i < actions.length; ++i) {
+          var slide = actions[i];
+          content += "<div id='s_" + i +"'>" + slide.html() + "</div>";
+        }
+
+        $('#content').html(content);
+
+        // first slide is the header, skip it
+        for(var i = 1; i < actions.length; ++i) {
+          var slide = actions[i];
+          this.story.addState(
+            O.Triggers.Scroll().within('s_' + i).offset(TRIGGER_LINE),
+            O.Parallel(
+              slide(this),
+              this.miniprogressbar.percent(100*i/(actions.length - 1))
+            )
+          )
+        }
+
+        if(window.scrollY === 0) {
+          this.story.go(0);
+        }
+      }
+    });
+  </script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-20934186-21', 'cartodb.github.io');
+    ga('send', 'pageview');
+  </script>
+
+
+<script id="md_template" type="text/template">```
+-title: "Sikart Suche"
+-author: "CARTODB TEAM"
+```
+
+#Sikart Suche
+```
+- center: [46.9,8.5]
+- zoom: 6.5
+```
+
+#Museen in Ihrer Nähe
+
+Folgend werden die Museen aufgelistet, welche in Ihrer Nähe Bilder vom ausgewählten 
+Künstler ausstellen:
+
+#Stadtmuseum Kringelfingen, Solothurn 
+```
+- center: [47.2, 8.5]
+- zoom: 8
+L.marker([47.2087, 7.538]).actions.addRemove(S.map)
+L.marker([47.4824, 8.2072]).actions.addRemove(S.map)
+```
+![reading](http://www.sikart.ch/abb373/86463CE1.jpg) 
+
+KünstlerIn: Tinguely, Jean
+
+Titel: Metamatic No. 13
+
+Datierung: 1959
+
+Technik: Dreifuss und Platten aus Metall, Holzräder, Gummiriemen, Elektromotor
+
+Masse: circa 100 x 180 cm
+
+SIK-ISEA Inventarnummer: 86463
+
+Letzte Änderung: 12.11.2012
+
+Link zu Sikart: [www.sikart.ch](http://www.sikart.ch/werke.aspx?id=11328192)
+
+#Leeds Festival, UK 
+```
+- center: [53.8060025, -1.5357323]
+- zoom: 5
+L.marker([53.8060, -1.5357]).actions.addRemove(S.map)
+```
+![leeds](http://farm1.staticflickr.com/61/227142696_7fde7b444f_b.jpg)
+
+When: 22-24 August 
+
+Where: Bramham Park, West Yorkshire, United Kingdom
+
+Performances: Paramore, Blink- 182, The Hives, The 1975, Die Antwoord, Electric Youth, Letlive, and others. 
+
+Go to their website: [www.leedsfestival.com](http://www.leedsfestival.com/)
+
+
+#Sziget Festival, Hungary
+```
+- center: [47.5502773, 19.0536111]
+- zoom: 6
+L.marker([53.8060, -1.5357]).actions.addRemove(S.map)
+```
+![sziget](http://upload.wikimedia.org/wikipedia/commons/c/c3/Sziget_Magyar_Dal.jpg)
+
+When: 11-18 August
+
+Where: Óbuda Island, Budapest, Hungary
+
+Performances: Queen Of The Stones Age, Outkast, Prodigy, Placebo, Macklemore, Blink-182, Calvin Harris, Lily Allen, Korn, Deadmau5 and more
+
+For more information check their website: [www.szigetfestival.com](http://www.szigetfestival.com/)
+
+#Frequency Festival, Austria 
+```
+- center: [48.19378, 15.6470151]
+- zoom: 7
+L.marker([48.19378, 15.6470151]).actions.addRemove(S.map)
+```
+![frequency](https://c2.staticflickr.com/8/7247/7845817080_c93cbe1589_z.jpg)
+
+When: 13-16 August
+
+Where: Green Park, St. Pölten, Austria
+
+Performances: Skirellex, Woodkid, Macklemore and Ryan Lewis, Bastille, Imagine Dragons, The Kooks, Jimmy Eat World, Travis, Crystal Fighters, Brody Dalle and others.  
+
+Go to their website: [www.frequency.at](http://www.frequency.at/)
+
+
+#Paleo Festival, Switzerland 
+```
+- center: [46.3864366, 6.2266538]
+- zoom: 6
+L.marker([46.3864366, 6.2266538]).actions.addRemove(S.map)
+```
+![paleo](http://upload.wikimedia.org/wikipedia/commons/c/c9/Paleo_festival_nyon_14.jpg)
+
+When: 22-27 July
+
+Where: Nyon, Switzerland
+
+Performances: Thirty Seconds To Mars, The Black Keys, Jungle, Tallisco, Catfish, Jack Johnson, L.U.N.A, Elton Jhon, Les Innocents, James Blunt and more. 
+
+For more information check their website: [www.yeah.paleo.ch](http://yeah.paleo.ch/)
+
+#Rock en Seine, France 
+```
+- center: [48.843035, 2.221758]
+- zoom: 5
+L.marker([48.8430, 2.2218]).actions.addRemove(S.map)
+```
+![seine](http://upload.wikimedia.org/wikipedia/commons/a/a1/Rock_en_Seine_2007,_The_Hives_1.jpg)
+
+When: 22-24 August
+
+Where: Domaine national de Saint-Cloud, near Paris, France. 
+
+Performances: Artic Monkeys, The Prodigy, Lana Del Rey, Airbourne, Die Antwoord, La Roux, Wild Beast, Broody Dalle, Tiger Bell, Alice Lewis, and others. 
+
+Go to their website: [www.rockenseine.com/en/](http://www.rockenseine.com/en/)
+
+#Highfield Festival, Germany 
+```
+- center: [51.225222, 12.441704]
+- zoom: 6
+L.marker([51.2206, 12.4365]).actions.addRemove(S.map)
+```
+![germany](http://upload.wikimedia.org/wikipedia/commons/d/db/Godiva_Festival_-Electric_Main_Stage-3July2009.jpg)
+
+When: 15-17 August 
+
+Where: Leipzig, Germany
+
+Performances: Juppiter Jones, Queens of the Stones Age, Karamelo Santo, Eskimo Callboy, Young Rebel Set, montreal, Pascow, Blink-182 and more. 
+
+Go to their website: [www.highfield.de/en/](http://www.highfield.de/en/)
+
+#Benicassim International Festival, Spain
+```
+- center: [40.0379933, 0.0572627]
+- zoom: 5
+L.marker([40.0379933, 0.0572627]).actions.addRemove(S.map)
+```
+![spain](http://www.roomsuggestion.com/userfiles/images/Primavera-credit-website.jpg)
+
+When: 17-20 July
+
+Where: Benicassim, Spain.
+
+Performances: Ellie Goulding, The Libertines, Kasabian, Jake Bugg, Lily Allen, Slow Magic, Katy B, Jhon Gray, El Pardo, Aeroplane, and others. 
+
+For more information check their website: [www.fiberfib.com](http://www.fiberfib.com/index.php/en/)
+
+#Electric Picnic, Ireland
+```
+- center: [53.0105834, -7.155561]
+- zoom: 7
+L.marker([53.0105834, -7.155561]).actions.addRemove(S.map)
+```
+![electric](http://upload.wikimedia.org/wikipedia/commons/2/29/Picture_showing_the_crowd_at_the_Body_%26_Soul_arena_at_Electric_Picnic_2010.jpg)
+
+When: 29-31 August 
+
+Where: Stradbally, County Laois, Ireland
+
+Performances: Portisheas, Outkast, Beck, Foals, James Murphy, Bicep, London Grammar, Flume, Annie Mac, The Stranglers, and more. 
+
+Go to their website: [www.electricpicnic.ie](http://www.electricpicnic.ie/)
+
+#Øya Festival, Norway
+```
+- center: [59.8938549, 10.7851165]
+- zoom: 3
+L.marker([59.8938549, 10.7851165]).actions.addRemove(S.map)
+```
+![oya](http://farm7.staticflickr.com/6074/6046621151_4335ba1568_b.jpg)
+
+When: 5-9 August 
+
+Where: Middelalderparken, Oslo, Norway.
+
+Performances: Outkast, The National, Slowdive, Todd Terje, Mayhem, Future, Clean Bandit, blood Orange, Lulu James, Angel Olsen, and more. 
+
+For more information check their website: [www.oyafestivalen.com](http://www.oyafestivalen.com/)
+
+
+#Way Out West Festival, Sweden
+```
+- center: [57.7019548, 11.893682]
+- zoom: 4
+L.marker([57.7019548, 11.893682]).actions.addRemove(S.map)
+```
+![way](http://upload.wikimedia.org/wikipedia/commons/2/24/Haim_Way_Out_West_2013.jpg)
+
+When: 7-9 August
+
+Where: Gothenburg, Sweden
+
+Performances: OutKast, Queens of the Stone Age, The National, Robyn, Röyksopp, Little, Dragon, Icona Pop, Janelle Monáe, Pusha T, Future, Neutral Milk Hotel, Poliça, and more. 
+
+Go to their website: [www.wayoutwest.se](http://wayoutwest.se/)
+
+#Tomorrowland Festival, Belgium
+```
+- center: [51.091448, 4.385369]
+- zoom: 7
+L.marker([51.091448, 4.385369]).actions.addRemove(S.map)
+```
+![image](http://djpicshd.com/wp-content/uploads/2012/07/Tomorrowland-2012-hd-wallpaper-huge-crowd-picture1.jpg)
+
+When: Weekend 1: 18-20 July 2014
+Weekend 2: 25-27 July 2014
+
+Where: Boom, Belgium
+
+Performance: Armin Van Buuren, Dada Life, Dimitri Vegas & Like Mike, Dirty South, Eric Prydz, Martin Solveig, Nervo, Skrilex, Wolfpack, Yves V, MC Strech, Afrojack, Alesso, Carnage, Dyro, Hardwell,Hardwell & Tiësto, and many more 
+
+For more information go to their website: [www.tomorrowland.com](http://www.tomorrowland.com/global-splash/)
+
+#Flow Festival, Finland
+```
+- center: [60.1733239, 24.9410248]
+- zoom: 6
+L.marker([60.1733239, 24.9410248]).actions.addRemove(S.map)
+```
+![flow](http://www.licordegranadas.es/index/wp-content/uploads/2013/02/Flow.jpg)
+
+When: 8-10 August
+
+Where: Helsinki, Finland
+
+Performances: The National, Bonobo, Outkast, Mos Def, Slowdive, The Horrors, Paul Kalkbrenner, Janelle Monáe, Little Dragon, Real Estate, Bill Callahan, Marissa Nadler, Die Antwoord, Slint Kavinsky and more
+
+For more information: [www.flowfestival.com/en](http://www.flowfestival.com/en/)
+
+#Paredes de Coura Festival, Portugal
+```
+- center: [41.9134534, -8.5819676]
+- zoom: 5
+L.marker([41.9134534, -8.5819676]).actions.addRemove(S.map)
+```
+![paredes](http://upload.wikimedia.org/wikipedia/commons/c/c2/Death_from_Above_1979_Paredes_de_Coura.jpg)
+
+When: 20-23 August
+
+Where: Praia Fluvial do Taboão, Paredes de Coura, Portugal
+
+Performances: Kurt Vile, Conor Oberst,Yuck, Seasick,
+Thurston Moore, Thee Oh Sees, Dawes, Mac DeMarco, PanamaUp, The Growlers
+Franz Ferdinand, Cut Copy, Beirut, Black Lips, James Blake, and more. 
+
+For more information: [www.paredesdecoura.com](http://www.paredesdecoura.com/)
+
+#Pohoda Festival, Slovakia
+```
+- center: [48.8983536, 18.0577472]
+- zoom: 6
+L.marker([48.8983536, 18.0577472]).actions.addRemove(S.map)
+```
+![pohoda](http://upload.wikimedia.org/wikipedia/commons/6/64/Crystal_Castles_Counterpoint.jpg)
+
+When: 10-12 July
+
+Where: Trencin, Slovakia
+
+Performances: Mogwai, Goldfrapp, Travis, Tricky, Kraftwerk, Suede, Kelis, Sleigh Bells, Mr. Scruff, Modeselektor, Tame Impala, Moderat, Mount Kimbie, Band of Skulls, Seasick Steve, adn many more
+
+For more information: [www.pohodafestival.sk/en](http://www.pohodafestival.sk/en)
+
+#Colours of Ostrava, Czech Republic
+```
+- center: [49.8197415, 18.2373945]
+- zoom: 7
+L.marker([49.8197415, 18.2373945]).actions.addRemove(S.map)
+```
+![colours](http://farm4.staticflickr.com/3732/9326982505_4e43d2f4e6_o.jpg)
+
+When: 17-20 July
+
+Where: Ostrava, Czech Republic
+
+Performances: The National, MGMT, Emilíana Torrini, Trentemøller, The John Butler Trio, Ólafur Arnalds, The Asteroids Galaxy Tour, Robert Plant, ZAZ, Jamie Woon, Horkýže Slíže,Seasick Steve, Belleruche ,Vypsaná fiXa, Angélique Kidjo, Chinaski, Polemic, and more
+
+Go to their website: [www.colours.cz/en](http://www.colours.cz/en)
+
+
+#Woodstock Festival, Poland
+```
+- center: [53.3751617, 14.5015535]
+- zoom: 5
+L.marker([53.3751617, 14.5015535]).actions.addRemove(S.map)
+```
+![wood](http://upload.wikimedia.org/wikipedia/commons/7/77/2013_Woodstock_123.jpg)
+
+When: 31st July - 02nd August
+
+Where: Kostrzyn, Poland
+
+Performances: Manu Chao, Coma, Volbeat, Hatebreed, Ska-P ,T.Love, Skid Row, Accept, Lao Che, Acid Drinkers, Skindred, Włochaty, Jelonek, Kasia Kowalska, Budka Suflera, Łzy, Ras Luta, Mesajah, The BossHoss, Marika, The Bill, Tabu, Ky-Mani, and many more
+
+For more information: [www.en.wosp.org.pl](http://www.en.wosp.org.pl/) 
+
+#Afisha Picnic Festival, Russia
+```
+- center: [55.749792, 37,632,495]
+- zoom: 3
+L.marker([55.749792, 37,632,495]).actions.addRemove(S.map)
+```
+![russia](http://upload.wikimedia.org/wikipedia/commons/5/57/Russian_rock_band_Splean_-_Vasiliev_05.06.2008_4.jpg)
+
+When: 19 July
+
+Where: Moscow, Russia
+
+Performances: MGMT, Jamiroquai, Suede, Talib Kweli, Ляпис Трубецкой, Каста, Astronautalis, Mulatu Astatke, Самое Большое Простое Число, On-The-Go, Sohn 
+
+
+#Exit Festival, Serbia
+```
+- center: [45.252897, 19.861651]
+- zoom: 4
+L.marker([45.252897, 19.861651]).actions.addRemove(S.map)
+```
+![exit](http://upload.wikimedia.org/wikipedia/commons/2/23/Madness_at_Main_stage,_Exit_festival.jpg)
+
+When: 10-13 July
+
+Where: Petrovaradin, Novi Sad, Vojvodina, Serbia
+
+Performances: Pet Shop Boys, Stromae,Madball, Tibia, All Except One, Roir, In The Crossfire, Death Before Dishonor, Planet of Zeus, Tona,Pretty Lights, Sub Focus DJ Set,
+Adventure Club, and many more 
+
+Go to their website: [www.exitfest.org](http://www.exitfest.org/sr)
+
+#Smukfest, Denmark
+```
+- center: [56.031095,9.921064]
+- zoom: 5
+L.marker([560,851,896, 9,863,449]).actions.addRemove(S.map)
+```
+![muk](http://upload.wikimedia.org/wikipedia/commons/5/5b/Roskilde_Festival_-_Orange_Stage_-_Bruce_Springsteen.jpg)
+
+When: 6-10 August
+
+Where: Skanderborg, Denmark
+
+Performances: deadmau5, Pet Shop Boys, Skrillex, Simple Minds, Example, Jimmy Cliff, Safri Duo, D-A-D, Carpark North, Nephew, Dana Fuchs, Tina Dickow, Mugison, Pretty Maids, and many more
+
+For more information: [www.smukfest.dk](http://www.smukfest.dk/)
+
+#Mysteryland Festival, Netherlands
+```
+- center: [52.3747158, 4.8986166]
+- zoom: 6
+L.marker([52.3747158, 4.8986166]).actions.addRemove(S.map)
+```
+![mystery](http://www.youredm.com/wp-content/uploads/2014/04/1200x675-C.jpg)
+
+When: 23rd August
+
+Where: Haarlem, Netherlands
+
+Performances: Pendulum, Boys Noize, Kaskade, Rusko, Verse, Steve Aoki, Sander Van Doorn, Hector, Noisecontrollers, Joris Voorn, Loco Dice, UMEK, Robert Hood, and many more 
+
+Go to their website: [www.mysteryland.nl/en](http://www.mysteryland.nl/en/)
+
+#Peninsula Félsziget Festival, Romania
+```
+- center: [46.7833856, 23.6165124]
+- zoom: 6
+L.marker([46.7833856, 23.6165124]).actions.addRemove(S.map)
+```
+![romania](http://upload.wikimedia.org/wikipedia/commons/8/84/The_Prodigy_live_in_Romania.JPG)
+
+When: 17-20 July
+
+Where: Cluj-Napoca, Romania
+
+Performances: Children of Bodom, Netsky, New Model Army, Babylon Circus, N.O.H.A., Trooper, Republic, Dirtyphonics, Colorstar, RotFront, VAMA, Firkin, Sarmalele Reci, Josh Gallahan, Kistehén, Viţa de Vie, Compact Disco, Electric Fence, and more
+
+For more information: [www.peninsula.ro](http://www.peninsula.ro/)
+
+#Outlook festival, Croatia
+```
+- center: [44.8853557, 13.8161362]
+- zoom: 6
+L.marker([44.8853557, 13.8161362]).actions.addRemove(S.map)
+```
+![out](http://hyponik.com/content/uploads/2013/03/Dan-Medhurst-2011-32.jpeg)
+
+When: 3-7 September 
+
+Where: Pula, Croatia
+
+Performances: Goldie, Busta Rhymes, DJ Premier, Friction, Zinc, MJ Cole, Calibre, Flowndan, Onra, Pinch, Strategy, Channel One, Leaf Dog, BVA, Wookie, and many more
+
+For more information: [www.outlookfestival.com](http://www.outlookfestival.com/)
+
+#Food For Your Senses Festival, Luxembourg
+```
+- center: [49.7879689, 6.0672212]
+- zoom: 4
+L.marker([49.7879689, 6.0672212]).actions.addRemove(S.map)
+```
+![food](http://farm3.staticflickr.com/2827/8950998164_4025cc6b27_b.jpg)
+
+When: 25-27 July
+
+Where: Tuntange, Luxembourg
+
+Performances: Milky Chance, Bonaparte, Kakkmaddafakka, Alle Farben, Serge Tonnar, Kadavar, Käptn Peng und die Tentakel von Delphi, and many more
+
+Go to their website: [www.ffys.eu](http://ffys.eu/)
+
+#Fontaine Festival, Latvia
+```
+- center: [56.5369455, 21.0384852]
+- zoom: 5
+L.marker([56.5369455, 21.0384852]).actions.addRemove(S.map)
+```
+![fontaine](http://i.dailymail.co.uk/i/pix/2014/06/04/article-2648402-1E6E8ACB00000578-921_634x364.jpg)
+
+When: 15-17 August
+
+Where: Leipaja, Latvia 
+
+Performances: Lapko, Inokentijs Mārpls, Mary Jane, Manzana, Pērkons, Adam Bomb, Rūsa, Kings of the Sun, The Briefing, All Day Long, Kuadra, Latvian Blues Band, Žoržs Siksna, Karmafree, Bulletsize, Los Jaigüey, and more
+
+Check their website: [www.fontainefestival.com](http://www.fontainefestival.com/)</script></body></html>
