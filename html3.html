@@ -266,7 +266,7 @@
         var TRIGGER_LINE = this.map.getSize().y + 50;
         
         document.getElementById('slides').innerHTML = ''
-        this.progress.count(sl.length);
+        this.progress.count(sl.length-3);
         
         // ---------- Unten ----------
         // create content
@@ -280,7 +280,7 @@
             slide_(this)
           );
           
-        for(var i = 1; i < actions.length; ++i) {
+        for(var i = actions.length-3; i < actions.length; ++i) {
           var slide = actions[i];
           content += "<div id='s_" + i +"'>" + slide.html() + "</div>";
         }
@@ -303,7 +303,7 @@
         // ---------- Unten ----------
 
         // create new story
-        for(var i = 0; i < sl.length; ++i) {
+        for(var i = 0; i < sl.length -3; ++i) {
           var slide = sl[i];
           var tmpl = "<div class='slide' style='diplay:none'>";
 
@@ -378,7 +378,9 @@ SIK-ISEA Inventarnummer: 86463
 
 Letzte Änderung: 12.11.2012
 
-Link zu Sikart: www.sikart.ch
+Link zu Sikart: [www.sikart.ch](www.sikart.ch)
+
+
 
 #Leeds Festival, UK 
 ```
@@ -433,4 +435,19 @@ Check out our [documentation](/odyssey.js/documentation/) to learn how to use od
 Also if you are a developer, take a look at our contributing guideline so you can push code to the actual library.
 
 Cheers!
+
+#Bild A
+![bildA] (http://www.artoffer.com/_images_user/4534/66688/Large/Mariola-Wloch-Abstraktes-Diverse-Musik-Moderne-Abstrakte-Kunst.jpg)
+
+Sehr schöne Kunst
+
+#Bild B
+![BildB] (http://polpix.sueddeutsche.com/bild/1.2029423.1404479333/640x360/hirnforschung.jpg)
+
+Auch sehr schönes Bild
+
+#Bild C
+![BildC] (http://www.spektrum.de/fm/912/thumbnails/Platz1.jpg.754785.jpg)
+
+Ganz tolles Bild
 </script></body></html>
