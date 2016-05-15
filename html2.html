@@ -81,6 +81,17 @@
   <script src="http://cartodb.github.io/odyssey.js/dist/odyssey.js" charset="UTF-8"></script>
 
   <script>
+  var myIcon = L.icon({
+    iconUrl: 'my-icon.png',
+    iconRetinaUrl: 'my-icon@2x.png',
+    iconSize: [38, 95],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76],
+    shadowUrl: 'my-icon-shadow.png',
+    shadowRetinaUrl: 'my-icon-shadow@2x.png',
+    shadowSize: [68, 95],
+    shadowAnchor: [22, 94]
+});
     var resizePID;
 
     function clearResize() {
@@ -303,7 +314,7 @@
 #Kunstmuseum Solothurn
 ```
 - center: [47.210375, 7.537959]
-- zoom: 11
+- zoom: 10
 L.marker([47.2095, 7.5366]).actions.addRemove(S.map)
 ```
 ![reading](http://www.sikart.ch/abb373/86463CE1.jpg)
