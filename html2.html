@@ -10,10 +10,56 @@
 
   <link rel="stylesheet" href="http://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/themes/css/cartodb.css">
   <link rel="stylesheet" href="http://cartodb.github.io/odyssey.js/sandbox/css/slides.css">
+  <link rel="stylesheet" href="http://cartodb.github.io/odyssey.js/sandbox/css/scroll.css">
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
   <script src="http://cartodb.github.io/odyssey.js/vendor/modernizr-2.6.2.min.js"></script>
+
+  <style>
+    .search {
+      width: 250px;
+      margin-top: 40px;
+      margin-left: auto;
+      margin-right: 80px;
+      position: relative;
+      color: #aaa;
+      font-size: 18px;
+    }
+
+    .search input {
+      width: 300px;
+      height: 55px;
+
+      background: #fcfcfc;
+      border: 10px solid #E31583;
+      border-radius: 5px;
+      box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+      
+    }
+
+    .search input { text-indent: 32px;}
+    .search .fa-search { 
+      position: absolute;
+      top: 18px;
+      left: 20px;
+    }
+    
+    .leaflet-control-attribution  {
+      visibility: hidden;
+    }
+    leaflet-control {
+      visibility: hidden;
+    }
+  </style>
 </head>
 <body>
   <div id="map" style="width: 100%; height: 100%;"></div>
+
+  <div style="position: fixed; top: 10; right:2;">
+    <div class="search">
+      <span class="fa fa-search"></span>
+      <input placeholder="Kunstschaffende finden">
+    </div>
+  </div>
 
   <div id="slides_container" style="display:block;">
     <div id="dots"></div>
@@ -257,17 +303,24 @@
 #Kunstmuseum Solothurn
 ```
 - center: [47.210375, 7.537959]
-- zoom: 9
-L.marker([37.7620, -122.4385]).actions.addRemove(S.map)
+- zoom: 11
+L.marker([47.2095, 7.5366]).actions.addRemove(S.map)
 ```
-![reading](http://www.sikart.ch/abb373/86463CE1.jpg) 
+![reading](http://www.sikart.ch/abb373/86463CE1.jpg)
+
 KünstlerIn: Tinguely, Jean
+
 Titel: Metamatic No. 13
 Datierung: 1959
+
 Technik: Dreifuss und Platten aus Metall, Holzräder, Gummiriemen, Elektromotor
+
 Masse: circa 100 x 180 cm
+
 SIK-ISEA Inventarnummer: 86463
+
 Letzte Änderung: 12.11.2012
+
 Link zu Sikart: www.sikart.ch
 
 #Leeds Festival, UK 
