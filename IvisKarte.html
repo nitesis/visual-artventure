@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body, #map {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+
+    <div id="map"></div>
+
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script>
+    var imageReithalleBern = ["90743DS13.jpg", "90743DS2.jpg", "90743DS5.jpg"];
+    var index = 0;
+
+    function carousel() {
+      var infoWindow = document.getElementsByClassName("cartodb-infowindow")[0];
+
+      if (infoWindow.style.display == "none" ||infoWindow.style.visibility == "hidden") {
+        console.log("nicht sichtbar");
+      } else {
+        console.log("sichtbar");
+        var image = document.getElementById("mySlides");
+        var name = (document.getElementsByClassName("order1")[0]).innerHTML;
+        image.style.display = "inline";
+        console.log(image);
+        console.log(name);
+
+        if (name == "Reithalle Bern") {
+          image.src = "http://www.sikart.ch/abb373/"+imageReithalleBern[index];
+        } else if (false) {
+
+        }else {
+          return;
+        }
+
+        index++;
+        if (index % imageReithalleBern.length == 0) {
+          index = 0;
+        }
+      }
+      setTimeout(carousel, 2000);
+    }
+
+    function asdf() {
+      var image = document.getElementById("mySlides");
+      image.style.display = "inline";
+      carousel();
+    }
+
+    window.onload = function() {
+        cartodb.createVis('map', 
+        'https://sslimon.cartodb.com/api/v2/viz/48ed3992-f63b-40aa-95ca-204f388c4101/viz.json', {
+          infowindow: true
+        }, asdf);
+    }
+    
+
+    // order1 ist name von infoscreen
+    // mySlides ist img
+    // div.cartodb-infowindow muss visibiltiy visible sein und nicht hidden.
+    
+    </script>
+
+  </body>
+</html> 
+
+
+
