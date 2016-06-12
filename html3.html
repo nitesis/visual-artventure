@@ -43,13 +43,16 @@
     }
     
     .leaflet-control-attribution  {
-      visibility: hidden;
+      
     }
     .leaflet-control {
-      visibility: hidden;
+      
     }
     .oddysey-miniprogressbar {
       background: #E31583 !important;
+    }
+    .slides_container {
+      background-color: rgba(255, 255, 255, 1) !important;
     }
   </style>
   
@@ -208,8 +211,11 @@
         this.story2.clear();
 
         if (this.baseurl && (this.baseurl !== actions.global.baseurl)) {
-          this.baseurl = actions.global.baseurl || 'http://0.api.cartocdn.com/base-light/{z}/{x}/{y}.png';
-
+          //this.baseurl = actions.global.baseurl || 'http://0.api.cartocdn.com/base-light/{z}/{x}/{y}.png';
+          //this.baseurl = "http://0.api.cartocdn.com/base-light/{z}/{x}/{y}.png";
+          //this.baseurl = 'http://d.tile.stamen.com/toner-lite/{z}/{x}/{y}.png';
+          //this.baseurl = "https://cartodb-basemaps-b.global.ssl.fastly.net/light_all/{z}/{x}/{y}@2x.png";
+          this.baseurl = "https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}@2x.png";
           this.basemap.setUrl(this.baseurl);
         }
 
@@ -352,17 +358,19 @@
   <script type="text/javascript" src="http://fast.fonts.net/jsapi/3af16084-ba56-49ca-b37d-0b49b59e1927.js"></script>
 
 <script id="md_template" type="text/template">```
+-baseurl: ""
 -title: "Entdecke Schweizer Kunst mit SIK-ISEA"
 -author: "Autor"
+-vizjson: "https://vibe.cartodb.com/api/v2/viz/4a2086e6-2fde-11e6-bf7a-0ecfd53eb7d3/viz.json"
 ```
 
-#Kunstmuseum Solothurn
+#Kunsthalle Bern
 ```
-- center: [47.2, 7.4]
-- zoom: 11
-L.marker([47.2087, 7.538]).actions.addRemove(S.map)
+- center: [46.94428, 7.44940]
+- zoom: 12
+L.marker([46.94428, 7.44940]).actions.addRemove(S.map)
 ```
-![reading](http://www.sikart.ch/abb373/86463CE1.jpg) 
+![reading](http://www.sikart.ch/abb373/77835DIV1.jpg) 
 
 KünstlerIn: Tinguely, Jean
 
