@@ -18,7 +18,18 @@
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script>
-    var imageReithalleBern = ["90743DS13.jpg", "90743DS2.jpg", "90743DS5.jpg"];
+    var imageReithalleBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunstalleBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunstmuseumBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKornfeldUndKlipstein = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesGalerieMartinKrebs = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesBernischesHistorischesMuseum = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKleineOrangerieElfenau = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesSchweizerischesAlpinesMuseum = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesMuseeCantonalDesBeauxArts = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunsthausZuerich = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunstmuseumLuzern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    
     var index = 0;
 
     function carousel() {
@@ -32,14 +43,32 @@
         var name = (document.getElementsByClassName("order1")[0]).innerHTML;
         image.style.display = "inline";
         console.log(image);
-        console.log(name);
+        //console.log(name);
 
         if (name == "Reithalle Bern") {
           image.src = "http://www.sikart.ch/abb373/"+imageReithalleBern[index];
-        } else if (false) {
-
+        } else if (name == "Kunsthalle Bern") {
+          console.log(name);
+        } else if (name == "Kunstmuseum Bern") {
+          console.log(name);
+        } else if (name == "Kornfeld und Klipstein") {
+          console.log(name);
+        } else if (name == "Galerie Martin Krebs") {
+          console.log(name);
+        } else if (name == "Bernisches Historisches Museum") {
+          console.log(name);
+        } else if (name == "Kleine Orangerie Elfenau\n") {
+          console.log(name);
+        } else if (name == "Schweizerisches Alpines Museum") {
+          console.log(name);
+        } else if (name == "Musee Cantonal des Beaux-Arts") {
+          console.log(name);
+        } else if (name == "Kunsthaus Zuerich") {
+          console.log(name);
+        } else if (name == "Kunstmuseum Luzern") { 
+            console.log(name);        
         }else {
-          return;
+          //
         }
 
         index++;
