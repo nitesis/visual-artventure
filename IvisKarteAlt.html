@@ -19,27 +19,23 @@
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script>
     var imageReithalleBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
-    var imagesKunstalleBern = ["77835DIV1.jpg", "77664DIV1.jpg", "77664DIV1.jpg", "78879S1.jpg", "78879S1.jpg"];
-    var imagesKunstmuseumBern = ["90743DS2.jpg", "90743DS5.jpg", "90743DS13.jpg", "90743DS2.jpg", "90743DS5.jpg"];
-	var imagesKornfeldUndKlipstein = ["23500S1.jpg", "23500S1.jpg", "77880DIV1.jpg", "77880DIV1.jpg", "77828S1.jpg"];
-    var imagesGalerieMartinKrebs = ["80128DIV1.jpg", "79424DIV1.jpg", "79497S1.jpg", "79698S1.jpg", "80100S1.jpg"];
-	var imagesBernischesHistorischesMuseum = ["90779D1.jpg", "90785D1.jpg", "90756D1.jpg", "82489DS1.jpg", "90760D1.jpg"];
-    var imagesSchweizerischesAlpinesMuseum = ["453S1.jpg", "80990CE1.jpg", "80993CE1.jpg", "80994CE1.jpg", "80988CE1.jpg"];
-    var imagesMuseeCantonalDesBeauxArts = ["97282D1.jpg", "97288D1.jpg", "97292D1.jpg", "97290D1.jpg", "97281D1.jpg"];
-    var imagesKunsthausZuerich = ["54651DS1.jpg", "75870E2.jpg", "19729S1.jpg", "75681E1.jpg", "76255E1.jpg"];
-    var imagesKunstmuseumLuzern = ["77880DIV1.jpg", "77699DIV1.jpg", "77828S1.jpg", "80144S1.jpg", "77819S1.jpg"];
-	
-	var imagesKleineOrangerieElfenau = ["90743DS13.jpg", "90743DS13.jpg", "90743DS13.jpg", "90743DS13.jpg", "90743DS13.jpg"];
-
-	
-
+    var imagesKunstalleBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunstmuseumBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKornfeldUndKlipstein = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesGalerieMartinKrebs = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesBernischesHistorischesMuseum = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKleineOrangerieElfenau = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesSchweizerischesAlpinesMuseum = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesMuseeCantonalDesBeauxArts = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunsthausZuerich = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imagesKunstmuseumLuzern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
     
     var index = 0;
 
     function carousel() {
       var infoWindow = document.getElementsByClassName("cartodb-infowindow")[0];
 
-      if (infoWindow.style.display == "none" ||infoWindow.style.visibility == "hidden") {
+      if (infoWindow.style.display == "none" || infoWindow.style.visibility == "hidden") {
         console.log("nicht sichtbar");
       } else {
         console.log("sichtbar");
