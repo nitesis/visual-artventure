@@ -14,6 +14,9 @@
       div.cartodb-popup.v2.header a.cartodb-popup-close-button:after, div.cartodb-popup.v2.header a.cartodb-popup-close-button:before {
         background: #e41586 !important;
       }
+      div.cartodb-popup.v2.header.with-image div.cartodb-popup-header h1 {
+        background-color: rgba(0,0,0,.5);
+      }
 
     .leaflet-container img {
         width: 300px;
@@ -34,7 +37,7 @@
       width: 195px !important;
       border: none !important;
       border-bottom: 50px !important;
-      color: rgba(0,0,0,.5) !important;
+      
     }
     input#amount {
       width: 192px;
@@ -43,14 +46,15 @@
 
     .order1 {
         text-shadow: -1px 0 #535353, 0 1px #535353, 1px 0 #535353, 0 -1px #535353;
-
     }
+
     #contSlider {
       top: 80%;
       z-index: 10;
       left: 70%;
       width: 30%;
       position: fixed;
+
     }
     #slider .ui-slider-handle { 
       border-color: #e41586; 
@@ -80,20 +84,20 @@
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
-    var imageReitschuleBern = ["77700E1.jpg", "77901CE1.jpg", "78915DIV1.jpg", "77817DIV1.jpg", "77686S1.jpg"];
-    var imageReitschuleBernArtist = ["Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl"]
+    var imageReitschuleBern = ["80345S1.jpg", "77901CE1.jpg", "78915DIV1.jpg", "77817DIV1.jpg", "77686S1.jpg"];
+    var imageReitschuleBernArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"]
     var imagesKunstalleBern = ["77835DIV1.jpg", "77664DIV1.jpg", "77664DIV1.jpg", "78879S1.jpg", "78879S1.jpg"];
     var imagesKunstalleBernArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl" ];
     var imagesKunstmuseumBern = ["90743DS2.jpg", "90743DS5.jpg", "90743DS13.jpg", "90743DS2.jpg", "90743DS5.jpg"];
     var imagesKunstmuseumBernArtist = ["Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel"];
 
-	var imagesKornfeldUndKlipstein = ["23500S1.jpg", "23500S1.jpg", "77880DIV1.jpg", "77880DIV1.jpg", "77828S1.jpg"];
+	var imagesKornfeldUndKlipstein = ["80345S1.jpg", "77829S1.jpg", "78166S1.jpg", "77891DIV1.jpg", "77828S1.jpg"];
   var imagesKornfeldUndKlipsteinArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"];
-    var imagesGalerieMartinKrebs = ["80128DIV1.jpg", "79424DIV1.jpg", "79497S1.jpg", "79698S1.jpg", "80100S1.jpg"];
+    var imagesGalerieMartinKrebs = ["80128DIV1.jpg", "79424DIV1.jpg", "79497S1.jpg", "77731S1.jpg", "80100S1.jpg"];
     var imagesGalerieMartinKrebsArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"];
 	var imagesBernischesHistorischesMuseum = ["90779D1.jpg", "90785D1.jpg", "90756D1.jpg", "82489DS1.jpg", "90760D1.jpg"];
   var imagesBernischesHistorischesMuseumArtist = ["Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel"];
-    var imagesSchweizerischesAlpinesMuseum = ["453S1.jpg", "80990CE1.jpg", "80993CE1.jpg", "80994CE1.jpg", "80988CE1.jpg"];
+    var imagesSchweizerischesAlpinesMuseum = ["453S1.jpg", "80990CE1.jpg", "80993CE1.jpg", "80994CE1.jpg", "450S1.jpg"];
     var imagesSchweizerischesAlpinesMuseumArtist = ["Ferdinand Hodler", "Ferdinand Hodler", "Ferdinand Hodler", "Ferdinand Hodler", "Ferdinand Hodler"];
     var imagesMuseeCantonalDesBeauxArts = ["97282D1.jpg", "97288D1.jpg", "97292D1.jpg", "97290D1.jpg", "97281D1.jpg"];
     var imagesMuseeCantonalDesBeauxArtsArtist = ["Eva Aeppli", "Eva Aeppli", "Eva Aeppli", "Eva Aeppli", "Eva Aeppli"];
@@ -122,9 +126,9 @@
         var kuenstler = (document.getElementsByClassName("order1")[0]);
         var cover = (document.getElementsByClassName("cover")[0]);
         var textWrapper = (document.getElementsByClassName("cartodb-popup-content-wrapper")[0]);
-        kuenstler.style.textShadow = "-1px 0 #e41586, 0 1px #e41586, 1px 0 #e41586, 0 -1px #e41586";
-        textWrapper.style.height = "100px";
-        cover.style.height = "300px";
+        //kuenstler.style.textShadow = "-1px 0 #e41586, 0 1px #e41586, 1px 0 #e41586, 0 -1px #e41586";
+        //textWrapper.style.height = "100px";
+        //cover.style.height = "300px";
         image.style.display = "inline";
         console.log(image);
         //console.log(name);
