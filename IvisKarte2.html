@@ -19,6 +19,7 @@
         width: 300px;
     }
 
+
     .leaflet-container a {
     color: rgba(0,0,0,.5)!important;
     }
@@ -35,6 +36,10 @@
     }
     input#amount {
       width: 192px;
+
+    .order1 {
+        text-shadow: -1px 0 #535353, 0 1px #535353, 1px 0 #535353, 0 -1px #535353;
+
     }
     #contSlider {
       top: 85%;
@@ -59,7 +64,7 @@
       <div id="contSlider">
         <p>
           <label for="amount">Maximale Suchdistanz in Kilometer:</label>
-          <input type="text" id="amount" readonly style="border:0; color:#e41586; font-weight:bold;">
+          <input type="text" id="amount" readonly style="border:0; color:#e41586; font-weight:bold;background: transparent;">
         </p>
         <div id="slider"><p></p></div>
       </div>
@@ -71,7 +76,7 @@
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
-    var imageReitschuleBern = ["77903DIV1.jpg", "77675DIV1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imageReitschuleBern = ["77700E1.jpg", "77901CE1.jpg", "78915DIV1.jpg", "77817DIV1.jpg", "77686S1.jpg"];
     var imageReitschuleBernArtist = ["Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl"]
     var imagesKunstalleBern = ["77835DIV1.jpg", "77664DIV1.jpg", "77664DIV1.jpg", "78879S1.jpg", "78879S1.jpg"];
     var imagesKunstalleBernArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl" ];
@@ -89,7 +94,7 @@
     var imagesMuseeCantonalDesBeauxArts = ["97282D1.jpg", "97288D1.jpg", "97292D1.jpg", "97290D1.jpg", "97281D1.jpg"];
     var imagesMuseeCantonalDesBeauxArtsArtist = ["Eva Aeppli", "Eva Aeppli", "Eva Aeppli", "Eva Aeppli", "Eva Aeppli"];
     var imagesKunsthausZuerich = ["54651DS1.jpg", "75870E2.jpg", "19729S1.jpg", "75681E1.jpg", "76255E1.jpg"];
-    var imagesKunsthausZuerichArtist = ["Markus Raetz", "Giovanni Battista Emmanuele Maria Segantini", "Ferdinand Hodler", "André Thomkins", "André Thomkins"];
+    var imagesKunsthausZuerichArtist = ["Markus Raetz", "Giovanni Battista Emmanuele Maria Segantini", "Ferdinand Hodler", "Andre Thomkins", "André Thomkins"];
     var imagesKunstmuseumLuzern = ["77880DIV1.jpg", "77699DIV1.jpg", "77828S1.jpg", "80144S1.jpg", "77819S1.jpg"];
     var imagesKunstmuseumLuzernArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"];
 	
@@ -113,6 +118,7 @@
         var kuenstler = (document.getElementsByClassName("order1")[0]);
         var cover = (document.getElementsByClassName("cover")[0]);
         var textWrapper = (document.getElementsByClassName("cartodb-popup-content-wrapper")[0]);
+        kuenstler.style.textShadow = "-1px 0 #e41586, 0 1px #e41586, 1px 0 #e41586, 0 -1px #e41586";
         textWrapper.style.height = "100px";
         cover.style.height = "300px";
         image.style.display = "inline";
@@ -125,7 +131,7 @@
         } else if (name == "Kunsthalle Bern") {
           console.log(name);
           image.src = "http://www.sikart.ch/abb373/"+imagesKunstalleBern[index];
-          kuenstler.innerHTML = imagesKunsthalleBernArtist[index];
+          kuenstler.innerHTML = imagesKunstalleBernArtist[index];
         } else if (name == "Kunstmuseum Bern") {
           console.log(name);
           image.src = "http://www.sikart.ch/abb373/"+imagesKunstmuseumBern[index];
