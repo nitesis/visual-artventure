@@ -7,6 +7,9 @@
         padding: 0;
         margin: 0;
       }
+      div.cartodb-popup.v2.header.with-image, div.cartodb-popup-header .cover {
+        height: 50%;
+      }
       div.cartodb-popup.v2.header a.cartodb-popup-close-button:after, div.cartodb-popup.v2.header a.cartodb-popup-close-button:before {
         background: #e41586 !important;
       }
@@ -26,7 +29,7 @@
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script>
-    var imageReithalleBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imageReitschuleBern = ["23500S1.jpg", "23500S1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
     var imagesKunstalleBern = ["77835DIV1.jpg", "77664DIV1.jpg", "77664DIV1.jpg", "78879S1.jpg", "78879S1.jpg"];
     var imagesKunstmuseumBern = ["90743DS2.jpg", "90743DS5.jpg", "90743DS13.jpg", "90743DS2.jpg", "90743DS5.jpg"];
 	var imagesKornfeldUndKlipstein = ["23500S1.jpg", "23500S1.jpg", "77880DIV1.jpg", "77880DIV1.jpg", "77828S1.jpg"];
@@ -57,8 +60,8 @@
         console.log(image);
         //console.log(name);
 
-        if (name == "Reithalle Bern") {
-          image.src = "http://www.sikart.ch/abb373/"+imageReithalleBern[index];
+        if (name == "Reitschule Bern") {
+          image.src = "http://www.sikart.ch/abb373/"+imageReitschuleBern[index];
         } else if (name == "Kunsthalle Bern") {
           console.log(name);
           image.src = "http://www.sikart.ch/abb373/"+imagesKunstalleBern[index];
@@ -94,7 +97,7 @@
         }
 
         index++;
-        if (index % imageReithalleBern.length == 0) {
+        if (index % imageReitschuleBern.length == 0) {
           index = 0;
         }
       }
