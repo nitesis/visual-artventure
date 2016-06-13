@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" type="image/png" href="my-icon.png">
+    <style>
+      html, body, #map {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      div.cartodb-popup.v2.header.with-image, div.cartodb-popup-header .cover {
+        height: 50%;
+      }
+      div.cartodb-popup.v2.header a.cartodb-popup-close-button:after, div.cartodb-popup.v2.header a.cartodb-popup-close-button:before {
+        background: #e41586 !important;
+      }
+
+    .leaflet-container img {
+        width: 300px;
+    }
+
+    #contSlider {
+      top: 85%;
+      z-index: 10;
+      left: 70%;
+      width: 30%;
+      position: fixed;
+    }
+    #slider .ui-slider-handle { 
+      border-color: #e41586; 
+      background: #e41586;
+    }
+
+    </style>
+  </head>
+  
+  <body>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    <div id="map">
+      <div id="contSlider">
+        <p>
+          <label for="amount">Maximale Suchdistanz in Kilometer:</label>
+          <input type="text" id="amount" readonly style="border:0; color:#e41586; font-weight:bold;">
+        </p>
+        <div id="slider"><p></p></div>
+      </div>
+    </div>
+
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+    var imageReitschuleBern = ["77903DIV1.jpg", "77675DIV1.jpg", "77664DIV1.jpg", "77818S1.jpg", "77687DIV1.jpg"];
+    var imageReitschuleBernArtist = ["Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl", "Bernhard Luginb	&uumlhl"]
+    var imagesKunstalleBern = ["77835DIV1.jpg", "77664DIV1.jpg", "77664DIV1.jpg", "78879S1.jpg", "78879S1.jpg"];
+    var imagesKunstalleBernArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl" ];
+    var imagesKunstmuseumBern = ["90743DS2.jpg", "90743DS5.jpg", "90743DS13.jpg", "90743DS2.jpg", "90743DS5.jpg"];
+    var imagesKunstmuseumBernArtist = ["Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel"];
+
+	var imagesKornfeldUndKlipstein = ["23500S1.jpg", "23500S1.jpg", "77880DIV1.jpg", "77880DIV1.jpg", "77828S1.jpg"];
+  var imagesKornfeldUndKlipsteinArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"];
+    var imagesGalerieMartinKrebs = ["80128DIV1.jpg", "79424DIV1.jpg", "79497S1.jpg", "79698S1.jpg", "80100S1.jpg"];
+    var imagesGalerieMartinKrebsArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"];
+	var imagesBernischesHistorischesMuseum = ["90779D1.jpg", "90785D1.jpg", "90756D1.jpg", "82489DS1.jpg", "90760D1.jpg"];
+  var imagesBernischesHistorischesMuseumArtist = ["Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel"];
+    var imagesSchweizerischesAlpinesMuseum = ["453S1.jpg", "80990CE1.jpg", "80993CE1.jpg", "80994CE1.jpg", "80988CE1.jpg"];
+    var imagesSchweizerischesAlpinesMuseumArtist = ["Ferdinand Hodler", "Ferdinand Hodler", "Ferdinand Hodler", "Ferdinand Hodler", "Ferdinand Hodler"];
+    var imagesMuseeCantonalDesBeauxArts = ["97282D1.jpg", "97288D1.jpg", "97292D1.jpg", "97290D1.jpg", "97281D1.jpg"];
+    var imagesMuseeCantonalDesBeauxArtsArtist = ["Eva Aeppli", "Eva Aeppli", "Eva Aeppli", "Eva Aeppli", "Eva Aeppli"];
+    var imagesKunsthausZuerich = ["54651DS1.jpg", "75870E2.jpg", "19729S1.jpg", "75681E1.jpg", "76255E1.jpg"];
+    var imagesKunsthausZuerichArtist = ["Markus Raetz", "Giovanni Battista Emmanuele Maria Segantini", "Ferdinand Hodler", "André Thomkins", "André Thomkins"];
+    var imagesKunstmuseumLuzern = ["77880DIV1.jpg", "77699DIV1.jpg", "77828S1.jpg", "80144S1.jpg", "77819S1.jpg"];
+    var imagesKunstmuseumLuzernArtist = ["Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl", "Bernhard Luginb&uumlhl"];
+	
+	var imagesKleineOrangerieElfenau = ["90743DS13.jpg", "90743DS13.jpg", "90743DS13.jpg", "90743DS13.jpg", "90743DS13.jpg"];
+  var imagesKleineOrangerieElfenauArtist = ["Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel", "Niklaus Manuel"];
+
+	
+
+    
+    var index = 0;
+
+    function carousel() {
+      var infoWindow = document.getElementsByClassName("cartodb-infowindow")[0];
+
+      if (infoWindow.style.display == "none" ||infoWindow.style.visibility == "hidden") {
+        console.log("nicht sichtbar");
+      } else {
+        console.log("sichtbar");
+        var image = document.getElementById("mySlides");
+        var name = document.getElementById("nameGalerie").innerHTML;
+        var kuenstler = (document.getElementsByClassName("order1")[0]);
+        var cover = (document.getElementsByClassName("cover")[0]);
+        var textWrapper = (document.getElementsByClassName("cartodb-popup-content-wrapper")[0]);
+        textWrapper.style.height = "100px";
+        cover.style.height = "100%";
+        image.style.display = "inline";
+        console.log(image);
+        //console.log(name);
+
+        if (name == "Reitschule Bern") {
+          image.src = "http://www.sikart.ch/abb373/"+imageReitschuleBern[index];
+          kuenstler.innerHTML = imageReitschuleBernArtist[index];
+        } else if (name == "Kunsthalle Bern") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesKunstalleBern[index];
+          kuenstler.innerHTML = imagesKunsthalleBernArtist[index];
+        } else if (name == "Kunstmuseum Bern") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesKunstmuseumBern[index];
+          kuenstler.innerHTML = imagesKunstmuseumBernArtist[index];
+        } else if (name == "Kornfeld und Klipstein") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesKornfeldUndKlipstein[index];
+          kuenstler.innerHTML = imagesKornfeldUndKlipsteinArtist[index];
+        } else if (name == "Galerie Martin Krebs") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesGalerieMartinKrebs[index];
+          kuenstler.innerHTML = imagesGalerieMartinKrebsArtist[index];
+        } else if (name == "Bernisches Historisches Museum") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesBernischesHistorischesMuseum[index];
+          kuenstler.innerHTML = imagesBernischesHistorischesMuseumArtist[index];
+        } else if (name == "Kleine Orangerie Elfenau\n") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesKleineOrangerieElfenau[index];
+          kuenstler.innerHTML = imagesKleineOrangerieElfenauArtist[index];
+        } else if (name == "Schweizerisches Alpines Museum") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesSchweizerischesAlpinesMuseum[index];
+          kuenstler.innerHTML = imagesSchweizerischesAlpinesMuseumArtist[index];
+        } else if (name == "Musee Cantonal des Beaux-Arts") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesMuseeCantonalDesBeauxArts[index];
+          kuenstler.innerHTML = imagesMuseeCantonalDesBeauxArtsArtist[index];
+        } else if (name == "Kunsthaus Zuerich") {
+          console.log(name);
+          image.src = "http://www.sikart.ch/abb373/"+imagesKunsthausZuerich[index];
+          kuenstler.innerHTML = imagesKunsthausZuerichArtist[index];
+        } else if (name == "Kunstmuseum Luzern") { 
+          console.log(name);        
+          image.src = "http://www.sikart.ch/abb373/"+imagesKunstmuseumLuzern[index];
+          kuenstler.innerHTML = imagesKunstmuseumLuzernArtist[index];
+        }else {
+          //
+        }
+
+        index++;
+        if (index % imageReitschuleBern.length == 0) {
+          index = 0;
+        }
+      }
+      setTimeout(carousel, 2000);
+    }
+
+    function asdf() {
+      var image = document.getElementById("mySlides");
+      image.style.display = "inline";
+      carousel();
+    }
+
+    window.onload = function() {
+        cartodb.createVis('map', 
+        'https://sslimon.cartodb.com/api/v2/viz/48ed3992-f63b-40aa-95ca-204f388c4101/viz.json', {
+          infowindow: true
+        }, asdf);
+    }
+    
+    $(function() {
+      $( "#slider" ).slider({ 
+        min: 1, 
+        max: 300, 
+        value: 50,
+        slide: function( event, ui ) {
+          $("#amount").val(ui.value);
+        }});
+        $("#amount").val( $("#slider").slider("value"));
+    });
+    // order1 ist name von infoscreen
+    // mySlides ist img
+    // div.cartodb-infowindow muss visibiltiy visible sein und nicht hidden.
+    
+    </script>
+
+  </body>
+</html> 
+
+
+
