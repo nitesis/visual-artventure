@@ -56,6 +56,10 @@
         console.log("sichtbar");
         var image = document.getElementById("mySlides");
         var name = (document.getElementsByClassName("order1")[0]).innerHTML;
+        var cover = (document.getElementsByClassName("cover")[0]);
+        var textWrapper = (document.getElementsByClassName("cartodb-popup-content-wrapper")[0]);
+        textWrapper.style.height = "100px";
+        cover.style.height = "100%";
         image.style.display = "inline";
         console.log(image);
         //console.log(name);
